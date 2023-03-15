@@ -38,8 +38,7 @@ class SensorConfig {
   late BehaviorSubject<double> _zoomController;
 
   /// Use this stream to debounce brightness events
-  final BehaviorSubject<double> _brightnessController =
-      BehaviorSubject<double>();
+  late BehaviorSubject<double> _brightnessController;
   StreamSubscription? _brightnessSubscription;
 
   SensorConfig({
@@ -51,6 +50,7 @@ class SensorConfig {
 
     /// Zoom must be between 0.0 (no zoom) and 1.0 (max zoom)
     double currentZoom = 0.0,
+    double currentBrightness = .5,
   }) {
     _flashModeController = BehaviorSubject<FlashMode>.seeded(flash);
     flashMode$ = _flashModeController.stream;
@@ -64,6 +64,7 @@ class SensorConfig {
     _aspectRatioController = BehaviorSubject.seeded(aspectRatio);
     aspectRatio$ = _aspectRatioController.stream;
 
+    _brightnessController = BehaviorSubject<double>().seeded(currentBrightness);
     _brightnessSubscription = _brightnessController.stream
         .debounceTime(const Duration(milliseconds: 500))
         .listen((value) => CamerawesomePlugin.setBrightness(value));
